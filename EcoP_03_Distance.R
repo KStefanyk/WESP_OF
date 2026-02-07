@@ -55,7 +55,7 @@ Lakes.2<-Lakes.1 %>%
 clgeo_IsValid(as(Lakes.2,'Spatial'), verbose = FALSE) #TRUE
 Lakes.v<-vect(Lakes.2)
 writeVector(Lakes.v, file.path(spatialOutDir,'Lakes.v.gpkg'), overwrite=TRUE)
-
+Lakes.v<-vect(file.path(spatialOutDir,'Lakes.v.gpkg'))
 #use touches=TRUE to capture all lakes even those that are not completely in a cell
 Lakes.r<-terra::rasterize(Lakes.v,AOIr,field='water',touches=TRUE,background=1)
 Lakes.r<-terra::rasterize(Lakes.v,rast(ProvRast),field='water',touches=TRUE,background=1) %>%

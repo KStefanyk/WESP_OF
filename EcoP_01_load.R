@@ -21,32 +21,19 @@ AOIbuff<-st_read(file.path(spatialInDir,paste0(WetlandAreaShortL[EcoP],"_AOIbuff
 
 Wetlands<-st_read(file.path(spatialInDir,'Wetlands.gpkg'))
 Wetlands.dat<-Wetlands %>% st_drop_geometry()
-
-#Check if Sampled wetlands are in Wetlands data base and that there are no duplicates
-# and assign wet_id from Wetlands to Field2024Data
-Wetlands_id_missing<-FWetlandsIn %>%
-  dplyr::filter(!WTLND_ID %in% Wetlands.dat$WTLND_ID)
-#If missing wetlands - process Field data using the WESP_data_prep scripts
-Duplicate_Wetland_Co<-data.frame(Duplicates=FWetlandsIn[duplicated(FWetlandsIn$WTLND_ID),]$WTLND_ID)
-#If clean then add wet_id from Wetlands to the field data
-# and add a wetL_id - for linking
-Wetlands_id<-Wetlands %>%
-     st_drop_geometry() %>%
-     dplyr::select(WTLND_ID,wet_id) %>%
-     dplyr::filter(WTLND_ID %in% FWetlandsIn$WTLND_ID)
-FWetlands<-FWetlandsIn %>%
-  left_join(Wetlands_id, by='WTLND_ID') %>%
-  mutate(wetL_id=as.numeric(rownames(.)))
-
-#Re-read Wetlands - if it was modified
-Wetlands<-st_read(file.path(spatialInDir,'Wetlands.gpkg'))
 WetlandsB<-st_read(file.path(spatialInDir,'WetlandsB.gpkg'))
 wetland.pt<-st_read(file.path(spatialInDir,'wetland.pt.gpkg'))
 
 #Read in the clipped data from WESP_data_prep
 DEM.tp<-rast(file.path(spatialInDir,paste0('DEMtp_',WetlandAreaShort,'.tif')))
+names(DEM.tp)<-'DEM'
 Disturb<-rast(file.path(spatialInDir,'Disturb.tif'))
-LandCover<-rast(file.path(spatialInDir,'LandCover.tif'))
+#Make LandCover a categorical spatial raster
+LandCover_LUT<-read_xlsx(file.path(dataOutDirP,"LandCover_LUT.xlsx")) %>%
+  dplyr::select(Value,LandCover)
+LandCover<-rast(file.path(spatialInDir,'LandCover.tif')) %>%
+  as.factor(.)
+levels(LandCover)<-LandCover_LUT
 FireR<-rast(file.path(spatialInDir,'FireR.tif'))
 roadsSR<-rast(file.path(spatialInDir,'roadsSR.tif'))
 roadsDist<-rast(file.path(spatialInDir,'roadsDist.tif'))
@@ -63,7 +50,7 @@ ConservationLands<-st_read(file.path(spatialInDir,'ConservationLands.gpkg')) %>%
 FWA_ASS_WSin<-st_read(file.path(spatialInDir,"FWA_ASS_WS.gpkg"))
 SARA<-st_read(file.path(spatialInDir,'SARA.gpkg'))
 Old_GrowthSSP<-st_read(file.path(spatialInDir,'Old_GrowthSSP.gpkg'))
-VRI<-st_read(file.path(spatialInDir,'VRI_raw.gpkg'))
+VRI<-st_read(file.path(spatialInDir,'VRI.gpkg'))
 roads<-st_read(file.path(spatialInDir,'roads_sf.gpkg'))
 Fire2010<-st_read(file.path(spatialInDir,'Fire2010.gpkg'))
 F_OWN<-st_read(file.path(spatialInDir,'F_OWN.gpkg'))

@@ -37,7 +37,8 @@ wet_commLandkmE[is.na(wet_commLandkmE)]<-1e6
 wet_commLandkmE[wet_commLandkmE==0]<-1e6
 
 Wet_UncommLand.1 <- wet_commLandkmE %>%
-  dplyr::select(-c('Wetland','Marine Water','Fresh Water'))
+  dplyr::select(-any_of(c('Wetland','Marine Water','Fresh Water')))
+
 LTypes<-colnames(Wet_UncommLand.1)[2:length(Wet_UncommLand.1)]
 
 Wet_UncommLand.2 <- Wet_UncommLand.1 %>%
@@ -79,14 +80,18 @@ Wet_commLand.1 <- wet_commLandE %>%
   mutate(commLandC=LTypes[max.col(.[LTypes], ties.method='first')]) %>%
   mutate(commLandA=rowMaxs(as.matrix((.[LTypes]) )))
 
+#May need to address if not using a 1ha raster
+PresX<-res(LandCover)[[1]]
+PresY<-res(LandCover)[[2]]
 OF35<-FWetlands100m %>%
   #mutate(wet_id=as.numeric(wet_id)) %>%
   left_join(Wet_commLand.1) %>%
-  #get area of AA in same units as rast polygons - 20x20
-  mutate(area_400m2=(area_Ha*10000)/400) %>%
+  #get area of AA in same units as rast polygons
+  #mutate(area_comm1=area_Ha/PresX*PresY) %>%
+  mutate(area_comm=area_Ha) %>%
   st_drop_geometry() %>%
   #calculate proportion of most dominant cover type
-  mutate(OF35_1=commLandA/area_400m2) %>%
+  mutate(OF35_1=round(commLandA/area_comm,2)) %>%
   dplyr::select(WTLND_ID,OF35_1)
 
 WriteXLS(OF35,file.path(dataOutDir,'OF35.xlsx'))

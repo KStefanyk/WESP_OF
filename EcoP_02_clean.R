@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 #Generate AOI based on field wetlands for office questions data clipping
+
 AOIwbuff <- FWetlands %>%
   st_union() %>%
   st_as_sf() %>%
@@ -122,7 +123,7 @@ terra::freq(UnvegV)
 writeRaster(UnvegV, filename=file.path(spatialOutDir,'UnvegV.tif'), overwrite=TRUE)
 
 #add roads
-RdUnveg<-roadsSR>0
+RdUnveg<-(roadsSR<3 & roadsSR>0)*1
 RdUnveg<-subst(RdUnveg, NA, 0)
 terra::freq(RdUnveg)
 writeRaster(RdUnveg, filename=file.path(spatialOutDir,'RdUnveg.tif'), overwrite=TRUE)
@@ -192,7 +193,6 @@ LakesDontTouchD<-rast(file.path(spatialOutDir,'LakesDontTouchD.tif'))
 LakesDontTouchGT8D<-rast(file.path(spatialOutDir,'LakesDontTouchGT8D.tif'))
 LkWet<-st_read(file.path(spatialOutDir,"LkWet.gpkg"))
 }
-
 
 message('Breaking')
 break

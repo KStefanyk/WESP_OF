@@ -31,14 +31,15 @@ wetlandsXYDEM <- wetlandsXY %>%
 wetpt <- wetlandsXYDEM %>%
   cbind(st_coordinates(wetlandsXYDEM)) %>%
   st_drop_geometry() %>%
-  dplyr::select(ID1=wet_id, ID2=WTLND_ID, Lat=Y, Long=X, Elev=DEM_SIM)
+  dplyr::select(ID1=wet_id, ID2=WTLND_ID, Lat=Y, Long=X, Elev=DEM_SI)
 
-write_csv(wetpt, path=file.path(dataOutDir, 'SIMwetpt.csv'))
+write_csv(wetpt, file=file.path(dataOutDir, 'SIwetpt.csv'))
 #After write copy the data into an email and send to windows and ensure
 # no blank lines, and use Windows CR
 # externally need to take file out and input to climatebc (external process)
+# import file to ClimateBC, select input and designate an output file, select all_variables and push start
 
-OF_25_26_27<-read_csv(file.path(dataOutDir,'CC/SIMwetpt_Normal_1961_1990Y.csv')) %>%
+OF_25_26_27<-read_csv(file.path(dataOutDir,'CC/SIwetpt_Normal_1961_1990Y.csv')) %>%
   dplyr::rename(wet_id=ID1) %>%
   dplyr::rename(WTLND_ID=ID2) %>%
   mutate(Rad=Rad_sp+Rad_sm) %>%

@@ -31,7 +31,7 @@ EcoPNL<-list("SOUTHERN INTERIOR MOUNTAINS",c("BOREAL PLAINS","TAIGA PLAINS"),
 #Select an EcoProvince(s)
 #one of: 1-SIM, 2-TBP, 3-SB, 4-GD, 5-GD_Est, 6-SB_PEM, 7-SI
 
-EcoP<-1
+EcoP<-7
 WetlandArea<-WetlandAreaL[EcoP]
 WetlandAreaDir<-WetlandAreaDirL[EcoP]
 WetlandAreaShort<-WetlandAreaShortL[EcoP]
@@ -50,8 +50,9 @@ dir.create(tempAOIDir, showWarnings = FALSE)
 
 #Load layers
 #Field Layers - should be first checked and cleaned by WESP_data_prep.R
-Field_in<-st_read(file.path(spatialInDir,paste0(WetlandAreaShort,"_Base_2024Field.gpkg")))
-FWetlandsIn<-Field_in
+Field_in<-st_read(file.path(spatialInDir,paste0(WetlandAreaShort,"_Base_2025Field.gpkg")))
+FWetlands<-Field_in %>%
+  arrange(wetL_id)
 
 #load wetlands processed by WESP_data_prep
 source('EcoP_01_load.R')
@@ -73,7 +74,7 @@ source('EcoP_within2km.R')
 #Attributes within ASS_WS
 source('EcoP_ASS_WS.R')
 #CC attributes - NOTE requires manual step to access data from climateBC
-source('EcoP_CC.R')
+#source('EcoP_CC.R')
 
 #Collate the individual office questions into a consolidated spreadsheet,
 # includes extracting manual questions from the field data - NOTE to be replace with survey123 office manual in wespr

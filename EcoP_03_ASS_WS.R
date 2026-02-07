@@ -33,7 +33,7 @@ DEM_ASS_WS<- merge(DEM_ASS_WS_max,DEM_ASS_WS_min, by='ASS_WS_id') %>%
 wetDEM<- terra::extract(DEM.tp,FieldWet.pts,fun=mean,na.rm=T,bind=TRUE) %>%
   sf::st_as_sf() %>%
   st_drop_geometry() %>%
-  dplyr::rename(wetDEM=3) %>%
+  dplyr::rename(wetDEM=DEM) %>%
   dplyr::select(WTLND_ID,wetDEM) %>%
   left_join(wet_WS)
 

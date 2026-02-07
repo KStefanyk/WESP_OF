@@ -21,7 +21,9 @@ OF18<-FWA_lakes %>%
   st_drop_geometry() %>%
   group_by(WTLND_ID) %>%
   dplyr::summarize(Lake_ha=sum(LkArea_Ha),Buff_area=first(Buffarea_Ha)) %>%
+  full_join(WTLND_ID_List) %>%
   mutate(LkDensity=Lake_ha/(Buff_area*0.01)) %>%
+  replace(is.na(.), 0) %>%
   mutate(OF18_1=if_else(LkDensity<0.02,1,0)) %>%
   mutate(OF18_2=if_else(LkDensity >=0.02 & LkDensity < 0.08,1,0)) %>%
   mutate(OF18_3=if_else(LkDensity >=0.08 & LkDensity < 0.18,1,0)) %>%
@@ -33,6 +35,7 @@ WriteXLS(OF18,file.path(dataOutDir,'OF18.xlsx'))
 
 #Lake and Wetland Density within 2km of AA - OF19
 OF19<-LkWet %>%
+  dplyr::select(LkArea) %>%
   st_intersection(FWetlands2km) %>%
   mutate(LkWetArea_Ha=as.numeric(st_area(.)*0.0001)) %>%
   #mutate(LareaHa=as.numeric(st_area(.))*0.001) %>%
@@ -40,13 +43,16 @@ OF19<-LkWet %>%
   st_drop_geometry() %>%
   group_by(WTLND_ID) %>%
   dplyr::summarize(LakeWet_ha=sum(LkWetArea_Ha),Buff_area=first(Buffarea_Ha)) %>%
+  full_join(WTLND_ID_List) %>%
   mutate(LkWetDensity=LakeWet_ha/(Buff_area))  %>%
+  replace(is.na(.), 0) %>%
   mutate(OF19_1=if_else(LkWetDensity<0.02,1,0)) %>%
   mutate(OF19_2=if_else(LkWetDensity >=0.02 & LkWetDensity < 0.08,1,0)) %>%
   mutate(OF19_3=if_else(LkWetDensity >=0.08 & LkWetDensity < 0.18,1,0)) %>%
   mutate(OF19_4=if_else(LkWetDensity >=0.18 & LkWetDensity <= 0.34,1,0)) %>%
   mutate(OF19_5=if_else(LkWetDensity >0.34,1,0)) %>%
   dplyr::select(WTLND_ID,OF19_1,OF19_2,OF19_3,OF19_4,OF19_5)
+
 WriteXLS(OF19,file.path(dataOutDir,'OF19.xlsx'))
 
 #Road Density within 2km of AA - OF31
@@ -78,10 +84,13 @@ m<-c(0,0,1,
 rclmat<-matrix(m,ncol=3, byrow=TRUE)
 DisturbB<-classify(Disturb,rclmat,include.lowest=TRUE)
 terra::freq(DisturbB)
-Intact_2km.1<- terra::extract(DisturbB,vect(FWetlands2km),fun=table,na.rm=T,bind=TRUE)
+#writeRaster(DisturbB, file.path(spatialOutDir,'DisturbB.tif'))
+
+Intact_2km.1<- terra::extract(DisturbB,vect(FWetlands2km),fun=table,na.rm=T,bind=F)
 colnames(Intact_2km.1)<-c('wetL_id','intact_ha','disturbed_ha')
 Intact_2km<-Intact_2km.1 %>%
   mutate(wetL_id=as.integer(wetL_id)) %>%
+  mutate(extractA=intact_ha+disturbed_ha) %>%
   left_join(FWetlands2km) %>%
   sf::st_drop_geometry()
 

@@ -54,6 +54,7 @@ OF23<-FWetlands %>%
   st_intersection(BGCprotectedin) %>%
   mutate(area_Ha=as.numeric(st_area(.)*0.0001)) %>%
   st_drop_geometry() %>%
+  #PCTBCPR describes what percent of a particular BGC Code is protected in the province by all protected areas combined.
   dplyr::select(WTLND_ID,area_Ha,PCTBCPR) %>%
   group_by(WTLND_ID) %>%
   mutate(maxArea=max(area_Ha)) %>%
@@ -71,7 +72,7 @@ WriteXLS(OF23,file.path(dataOutDir,paste0('OF23.xlsx')))
 #OF28 - Site Index within
 #Get mean SI -
 # set na.rm=F so that NaN SI is picked up in wetlands where it is not typed
-wet_SIE<-terra::extract(VRI_SIR,FWetlands,fun=mean,na.rm=F,weights=TRUE) %>%
+wet_SIE<-terra::extract(VRI_SIR,FWetlands,fun=mean,na.rm=T,weights=TRUE) %>%
   dplyr::rename(wetL_id=ID)
 OF28<-FWetlands %>%
   mutate(wetL_id=as.numeric(rownames(.))) %>%
@@ -90,7 +91,15 @@ OF28<-FWetlands %>%
 WriteXLS(OF28,file.path(dataOutDir,'OF28.xlsx'))
 
 #Topographic Position - OF29
-Top_pos<-terra::extract(LandForm,FWetlands,fun=max,na.rm=T,bind=TRUE) %>%
+get_mode <- function(x, na.rm = TRUE) {
+  if (na.rm) {
+    x <- na.omit(x)
+  }
+  if (length(x) == 0) return(NA)
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+Top_pos<-terra::extract(LandForm,FWetlands,fun=get_mode,na.rm=T,bind=TRUE) %>%
   sf::st_as_sf() %>%
   st_drop_geometry() %>%
   dplyr::select(WTLND_ID,Top_pos=landformP)
