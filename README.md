@@ -1,4 +1,4 @@
-### Wetland Ecosystem Services Protocol (WESP) Office Questions
+### British Columbia Wetland Ecosystem Services Protocol (WESP-BC) Office (Desktop) Questions
 <!-- 
 Add a project state badge
 
@@ -10,18 +10,18 @@ If you have bcgovr installed and you use RStudio, click the 'Insert BCDevex Badg
 The B.C. Wildlife Federation’s Wetlands Workforce project is a collaboration with conservation organizations and First Nations working to maintain and monitor wetlands across British Columbia.   
 https://bcwf.bc.ca/initiatives/wetlands-workforce/.  
 
-WESP - Wetland Ecosystem Services Protocol   
+WESP-BC - Biritsh Columbia Wetland Ecosystem Services Protocol   
 
-There are five sets of WESP R scripts to assess wetlands within a study area:  
+There are five sets of WESP-BC R scripts to assess wetlands within a study area:  
 1) WESP_data_prep - This repository, presents a set of scripts used to generate a new, or process existing, wetlands for a study area and the associated spatial data - https://github.com/BCWF-Wetlands/WESP_data_prep;  
 2) WESP_Sample_Design - attributes wetlands with  human and natural landscape characteristics - https://github.com/BCWF-Wetlands/WESP_Sample_Design;   
 3) WESP_Sample_Draw - Generates a report card of how samples are meeting sampling criteria and performs a draw to select wetlands to fill sampling gaps - https://github.com/BCWF-Wetlands/WESP_Sample_Draw;  
-4) WESP_OF - this repository, automates the majority of the office WESP questions. Questions OF6, OF8, OF9, OF10, OF11, OF13, OF14, OF24 must be answered manually - https://github.com/BCWF-Wetlands/WESP_OF; and  
+4) WESP_OF - this repository, automates the majority of the office (desktop) WESP-BC questions. Questions OF6, OF8, OF9, OF10, OF11, OF13, OF14, OF24 must be answered manually - https://github.com/BCWF-Wetlands/WESP_OF; and  
 5) WESP_Calculator - reads the office and field questions and runs wespr which calculate the Ecosystem Services for set of reference sites or a single comparison site - https://github.com/BCWF-Wetlands/WESP_Calculator.  
 
 ### Usage
 
-There are a set of scripts that help prepare and clea data and conduct the analysis for generating the answers to the WESP office questions, there are five basic sets of scripts:    
+There are a set of scripts that help prepare and clea data and conduct the analysis for generating the answers to the WESP-BC office (desktop) questions, there are five basic sets of scripts:    
 1. Control scripts - set up the analysis environment;  
 2. Load scripts - loads data;    
 3. Clean scripts - cleans and prepares wetland data;    
@@ -60,7 +60,7 @@ There EcoP_04_Collate.R	- collates the results from the analysis scripts along w
 
 ### Project Status
 
-The set of R WESP scripts are continually being modified and improved, including adding new study areas as sampling is initiated.
+The set of R WESP-BC scripts are continually being modified and improved, including adding new study areas as sampling is initiated.
 
 ### Getting Help or Reporting an Issue
 
